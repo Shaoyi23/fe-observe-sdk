@@ -1,0 +1,20 @@
+{
+  "name": "fe-observe-sdk",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "build": "npm run build --workspace @fe-observe/core && npm run build --workspace @fe-observe/demo",
+    "typecheck": "npm run typecheck --workspace @fe-observe/core && npm run typecheck --workspace @fe-observe/demo",
+    "dev:demo": "npm run dev --workspace @fe-observe/demo"
+  },
+  "devDependencies": {
+    "@types/node": "^24.9.0",
+    "typescript": "^5.9.3",
+    "vite": "^7.1.10"
+  }
+}
