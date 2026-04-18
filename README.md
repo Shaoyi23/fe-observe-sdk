@@ -32,7 +32,7 @@ Open the demo page, trigger the demo actions, and inspect the Vite dev server lo
 ## Install and Basic Usage
 
 ```bash
-npm install @compass/fe-observe-sdk
+npm install compass-fe-observe-sdk
 ```
 
 ```ts
@@ -42,7 +42,7 @@ import {
   init,
   performancePlugin,
   requestPlugin
-} from "@compass/fe-observe-sdk";
+} from "compass-fe-observe-sdk";
 
 const sdk = init({
   endpoint: "/collect",
@@ -87,7 +87,7 @@ sdk.captureException(new Error("Checkout failed"), {
 `performancePlugin()` reports `fcp`, `lcp`, `cls`, `inp`, and `ttfb` through the shared `performance_metric` event.
 
 ```ts
-import { init, performancePlugin } from "@compass/fe-observe-sdk";
+import { init, performancePlugin } from "compass-fe-observe-sdk";
 
 init({
   endpoint: "/collect",
@@ -100,7 +100,7 @@ init({
 `errorsPlugin()` captures `window.onerror`, `unhandledrejection`, resource loading failures, and manual errors through `sdk.captureException()`.
 
 ```ts
-import { errorsPlugin, init } from "@compass/fe-observe-sdk";
+import { errorsPlugin, init } from "compass-fe-observe-sdk";
 
 init({
   endpoint: "/collect",
@@ -120,7 +120,7 @@ init({
 `requestPlugin()` instruments `fetch` and `XMLHttpRequest` without breaking original behavior, collecting method, url, status, duration, and success state.
 
 ```ts
-import { init, requestPlugin } from "@compass/fe-observe-sdk";
+import { init, requestPlugin } from "compass-fe-observe-sdk";
 
 init({
   endpoint: "/collect",
@@ -141,7 +141,7 @@ init({
 `whiteScreenPlugin()` uses a lightweight heuristic to detect likely blank pages, optimized for low overhead and optional adoption.
 
 ```ts
-import { init, whiteScreenPlugin } from "@compass/fe-observe-sdk";
+import { init, whiteScreenPlugin } from "compass-fe-observe-sdk";
 
 init({
   endpoint: "/collect",
@@ -160,7 +160,7 @@ init({
 `longTaskPlugin()` uses browser `longtask` entries from `PerformanceObserver` to detect main-thread jank, with optional per-entry reporting and summary aggregation.
 
 ```ts
-import { init, longTaskPlugin } from "@compass/fe-observe-sdk";
+import { init, longTaskPlugin } from "compass-fe-observe-sdk";
 
 init({
   endpoint: "/collect",
@@ -177,7 +177,7 @@ init({
 Breadcrumbs capture a lightweight debugging trail for clicks, route changes, network events, and errors, and are automatically attached to later error events through `event.context.breadcrumbs`.
 
 ```ts
-import { breadcrumbsPlugin, errorsPlugin, init, requestPlugin } from "@compass/fe-observe-sdk";
+import { breadcrumbsPlugin, errorsPlugin, init, requestPlugin } from "compass-fe-observe-sdk";
 
 init({
   endpoint: "/collect",

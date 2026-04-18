@@ -1,5 +1,5 @@
 {
-  "name": "@compass/fe-observe-sdk",
+  "name": "compass-fe-observe-sdk",
   "version": "0.1.2",
   "description": "Lightweight frontend observability SDK for web applications.",
   "license": "MIT",
