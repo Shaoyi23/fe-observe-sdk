@@ -1,4 +1,4 @@
-# @compass/fe-observe-sdk
+# compass-fe-observe-sdk
 
 Lightweight frontend observability SDK for browser applications.
 
@@ -14,7 +14,7 @@ It provides a small core client plus optional plugins for:
 ## Install
 
 ```bash
-npm install @compass/fe-observe-sdk
+npm install compass-fe-observe-sdk
 ```
 
 For a public scoped package, publish with:
@@ -32,7 +32,7 @@ import {
   init,
   performancePlugin,
   requestPlugin
-} from "@compass/fe-observe-sdk";
+} from "compass-fe-observe-sdk";
 
 const sdk = init({
   endpoint: "https://your-api.example.com/collect",
@@ -95,7 +95,7 @@ Every event includes:
 ## Build
 
 ```bash
-npm run build --workspace @compass/fe-observe-sdk
+npm run build --workspace compass-fe-observe-sdk
 ```
 
 Build outputs:

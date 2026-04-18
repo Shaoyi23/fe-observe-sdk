@@ -38,4 +38,4 @@ jobs:
         run: npm run build
 
       - name: Publish package to npm
-        run: npm publish --workspace @compass/fe-observe-sdk --access public
+        run: npm publish --workspace compass-fe-observe-sdk --access public

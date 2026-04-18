@@ -8,8 +8,8 @@
     "apps/*"
   ],
   "scripts": {
-    "build": "npm run build --workspace @compass/fe-observe-sdk && npm run build --workspace @fe-observe/demo",
-    "typecheck": "npm run typecheck --workspace @compass/fe-observe-sdk && npm run typecheck --workspace @fe-observe/demo",
+    "build": "npm run build --workspace compass-fe-observe-sdk && npm run build --workspace @fe-observe/demo",
+    "typecheck": "npm run typecheck --workspace compass-fe-observe-sdk && npm run typecheck --workspace @fe-observe/demo",
     "dev:demo": "npm run dev --workspace @fe-observe/demo"
   },
   "devDependencies": {
