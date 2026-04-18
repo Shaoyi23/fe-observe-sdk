@@ -39,7 +39,7 @@ Open the demo, click the buttons, and inspect the terminal logs from the Vite de
 Usage:
 
 ```ts
-import { init, performancePlugin } from "@fe-observe/core";
+import { init, performancePlugin } from "@yachongshao/fe-observe-sdk";
 
 const sdk = init({
   endpoint: "/collect",
@@ -61,7 +61,7 @@ The plugin is passive and observer-based. It uses buffered `PerformanceObserver`
 Usage:
 
 ```ts
-import { errorsPlugin, init } from "@fe-observe/core";
+import { errorsPlugin, init } from "@yachongshao/fe-observe-sdk";
 
 const sdk = init({
   endpoint: "/collect",
@@ -96,7 +96,7 @@ Set `enabled: false` or disable individual capture flags to turn the plugin off 
 Usage:
 
 ```ts
-import { init, requestPlugin } from "@fe-observe/core";
+import { init, requestPlugin } from "@yachongshao/fe-observe-sdk";
 
 const sdk = init({
   endpoint: "/collect",
@@ -133,7 +133,7 @@ Chosen method:
 Usage:
 
 ```ts
-import { init, whiteScreenPlugin } from "@fe-observe/core";
+import { init, whiteScreenPlugin } from "@yachongshao/fe-observe-sdk";
 
 const sdk = init({
   endpoint: "/collect",
@@ -181,7 +181,7 @@ Summary fields:
 Usage:
 
 ```ts
-import { init, longTaskPlugin } from "@fe-observe/core";
+import { init, longTaskPlugin } from "@yachongshao/fe-observe-sdk";
 
 const sdk = init({
   endpoint: "/collect",
@@ -215,7 +215,7 @@ Sources:
 Usage:
 
 ```ts
-import { breadcrumbsPlugin, errorsPlugin, init, requestPlugin } from "@fe-observe/core";
+import { breadcrumbsPlugin, errorsPlugin, init, requestPlugin } from "@yachongshao/fe-observe-sdk";
 
 const sdk = init({
   endpoint: "/collect",

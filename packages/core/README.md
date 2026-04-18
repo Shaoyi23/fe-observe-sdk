@@ -1,4 +1,4 @@
-# @fe-observe/core
+# @yachongshao/fe-observe-sdk
 
 Lightweight frontend observability SDK for browser applications.
 
@@ -14,7 +14,7 @@ It provides a small core client plus optional plugins for:
 ## Install
 
 ```bash
-npm install @fe-observe/core
+npm install @yachongshao/fe-observe-sdk
 ```
 
 For a public scoped package, publish with:
@@ -32,7 +32,7 @@ import {
   init,
   performancePlugin,
   requestPlugin
-} from "@fe-observe/core";
+} from "@yachongshao/fe-observe-sdk";
 
 const sdk = init({
   endpoint: "https://your-api.example.com/collect",
@@ -95,7 +95,7 @@ Every event includes:
 ## Build
 
 ```bash
-npm run build --workspace @fe-observe/core
+npm run build --workspace @yachongshao/fe-observe-sdk
 ```
 
 Build outputs:
@@ -107,4 +107,3 @@ Build outputs:
 ## Browser support notes
 
 The core SDK targets modern browsers with `fetch`, `PerformanceObserver`, and DOM event APIs. Individual plugins degrade gracefully when a browser does not support a specific signal source such as long tasks or certain web vitals entries.
-
