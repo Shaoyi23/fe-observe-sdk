@@ -1,13 +1,19 @@
 # fe-observe-sdk
 
-A minimal frontend observability SDK monorepo focused on low overhead, strict TypeScript, and plugin-driven collection.
+中文：一个面向 Web 应用的轻量级前端可观测性 SDK Monorepo，强调低运行时开销、严格 TypeScript、插件化采集和清晰事件模型。  
+English: A lightweight frontend observability SDK monorepo for web applications, focused on low runtime overhead, strict TypeScript, plugin-based collection, and clean event modeling.
 
-## Packages
+## 项目结构 / Packages
 
-- `packages/core`: browser SDK core with event modeling, batching transport, context capture, and built-in plugins
-- `apps/demo`: Vite demo app with a mock `/collect` endpoint for local validation
+中文：
+- `packages/core`：浏览器 SDK 核心包，包含事件模型、上下文采集、批量传输和内置插件
+- `apps/demo`：Vite 演示应用，提供本地 `/collect` mock 接口用于验证
 
-## Quick start
+English:
+- `packages/core`: the browser SDK core package with event modeling, context capture, batching transport, and built-in plugins
+- `apps/demo`: a Vite demo app with a local `/collect` mock endpoint for validation
+
+## 快速开始 / Quick Start
 
 ```bash
 npm install
@@ -16,126 +22,147 @@ npm run build
 npm run dev:demo
 ```
 
-Open the demo, click the buttons, and inspect the terminal logs from the Vite dev server to see collected batches.
+中文：启动后打开 demo 页面，点击不同按钮，并查看 Vite dev server 日志以观察批量上报结果。  
+English: Open the demo page, trigger the demo actions, and inspect the Vite dev server logs to see batched reports.
 
-## MVP scope
+## 当前 MVP 能力 / Current MVP Scope
 
-- SDK initialization with app metadata, user context, and extra context
-- Typed event envelope for runtime errors, resource errors, performance metrics, request timing, and custom events
-- Fetch transport with in-memory batching and lifecycle-triggered flush
-- Plugin registration mechanism with small built-in browser plugins
-- Demo app that exercises the main signals
+中文：
+- SDK 初始化，支持 app、user、extra 上下文
+- 统一的类型化事件模型
+- 运行时错误、资源错误、性能指标、请求耗时、自定义事件采集
+- 基于插件的扩展机制
+- 带批量发送能力的 transport
+- demo 应用用于本地验证
 
-## Performance plugin
+English:
+- SDK initialization with app, user, and extra context
+- a shared typed event model
+- runtime error, resource error, performance, request timing, and custom event collection
+- a plugin-based extension mechanism
+- batching transport for delivery
+- a demo app for local validation
 
-`performancePlugin()` reports these normalized metrics through the shared `performance_metric` event:
+## 安装与基础用法 / Install and Basic Usage
 
-- `fcp`: first contentful paint, in milliseconds
-- `lcp`: largest contentful paint, in milliseconds
-- `cls`: cumulative layout shift, as a score
-- `inp`: interaction to next paint, in milliseconds
-- `ttfb`: time to first byte, in milliseconds
-
-Usage:
-
-```ts
-import { init, performancePlugin } from "@yachongshao/fe-observe-sdk";
-
-const sdk = init({
-  endpoint: "/collect",
-  plugins: [performancePlugin()]
-});
+```bash
+npm install @yachongshao/fe-observe-sdk
 ```
 
-The plugin is passive and observer-based. It uses buffered `PerformanceObserver` entries where available and reports final page-level metrics through the normal SDK batching pipeline.
-
-## Error plugin
-
-`errorsPlugin()` captures:
-
-- `window.onerror` runtime errors
-- `unhandledrejection` promise failures
-- resource loading failures for elements like `img`, `script`, and `link`
-- manual exceptions through `sdk.captureException(error, options)`
-
-Usage:
-
 ```ts
-import { errorsPlugin, init } from "@yachongshao/fe-observe-sdk";
+import {
+  breadcrumbsPlugin,
+  errorsPlugin,
+  init,
+  performancePlugin,
+  requestPlugin
+} from "@yachongshao/fe-observe-sdk";
 
 const sdk = init({
   endpoint: "/collect",
+  breadcrumbs: {
+    limit: 20
+  },
   plugins: [
+    performancePlugin(),
+    requestPlugin({
+      reportingEndpoint: "/collect",
+      ignoreReportingEndpoint: true,
+      breadcrumb: true
+    }),
     errorsPlugin({
-      captureWindowError: true,
-      captureUnhandledRejection: true,
-      captureResourceError: true
-    })
+      breadcrumb: true
+    }),
+    breadcrumbsPlugin()
   ]
 });
 
-sdk.captureException(new Error("checkout failed"), {
+sdk.setUser({
+  id: "user-123"
+});
+
+sdk.setExtra("region", "cn-hz");
+```
+
+中文：手动错误上报可通过 `sdk.captureException()` 完成。  
+English: Manual error reporting is available through `sdk.captureException()`.
+
+```ts
+sdk.captureException(new Error("Checkout failed"), {
   metadata: {
     feature: "checkout"
   }
 });
 ```
 
-Set `enabled: false` or disable individual capture flags to turn the plugin off without removing it from the integration path.
+## 插件能力概览 / Plugin Overview
 
-## Request plugin
+### 1. 性能插件 / Performance Plugin
 
-`requestPlugin()` captures request timing for both `fetch` and `XMLHttpRequest` without changing their observable behavior.
+中文：`performancePlugin()` 会通过共享的 `performance_metric` 事件上报 `fcp`、`lcp`、`cls`、`inp`、`ttfb`。  
+English: `performancePlugin()` reports `fcp`, `lcp`, `cls`, `inp`, and `ttfb` through the shared `performance_metric` event.
 
-- method
-- absolute url
-- status
-- duration
-- success state
+```ts
+import { init, performancePlugin } from "@yachongshao/fe-observe-sdk";
 
-Usage:
+init({
+  endpoint: "/collect",
+  plugins: [performancePlugin()]
+});
+```
+
+### 2. 错误插件 / Error Plugin
+
+中文：`errorsPlugin()` 支持捕获 `window.onerror`、`unhandledrejection`、资源加载错误，以及通过 `sdk.captureException()` 进行手动上报。  
+English: `errorsPlugin()` captures `window.onerror`, `unhandledrejection`, resource loading failures, and manual errors through `sdk.captureException()`.
+
+```ts
+import { errorsPlugin, init } from "@yachongshao/fe-observe-sdk";
+
+init({
+  endpoint: "/collect",
+  plugins: [
+    errorsPlugin({
+      captureWindowError: true,
+      captureUnhandledRejection: true,
+      captureResourceError: true,
+      breadcrumb: true
+    })
+  ]
+});
+```
+
+### 3. 请求插件 / Request Plugin
+
+中文：`requestPlugin()` 会在不破坏原始行为的前提下采集 `fetch` 和 `XMLHttpRequest` 的 method、url、status、duration、success。  
+English: `requestPlugin()` instruments `fetch` and `XMLHttpRequest` without breaking original behavior, collecting method, url, status, duration, and success state.
 
 ```ts
 import { init, requestPlugin } from "@yachongshao/fe-observe-sdk";
 
-const sdk = init({
+init({
   endpoint: "/collect",
   plugins: [
     requestPlugin({
       reportingEndpoint: "/collect",
       ignoreReportingEndpoint: true,
       ignoreStaticResources: true,
-      ignore: [/\/health$/, "/assets/internal"]
+      ignore: [/\/health$/, "/assets/internal"],
+      breadcrumb: true
     })
   ]
 });
 ```
 
-Notes:
+### 4. 白屏检测插件 / White-screen Plugin
 
-- `captureFetch` and `captureXhr` can be disabled independently
-- `ignoreReportingEndpoint` helps avoid self-reporting the SDK delivery endpoint
-- `ignoreStaticResources` is optional and skips common asset file extensions when enabled
-- `fetchPlugin()` remains available as a compatibility alias for fetch-only monitoring
-
-## White-screen plugin
-
-`whiteScreenPlugin()` provides an optional, low-cost heuristic for detecting likely blank-page failures.
-
-Chosen method:
-
-- wait until after page load, then delay a little more so normal rendering has time to settle
-- run detection in idle time where possible
-- sample several viewport points with `document.elementFromPoint()`
-- treat the page as suspicious only when most sample points hit `html`, `body`, or configured app-root containers
-- require the page to also have very little visible text or media content
-
-Usage:
+中文：`whiteScreenPlugin()` 使用轻量级启发式策略检测疑似白屏，默认强调低开销和可选启用。  
+English: `whiteScreenPlugin()` uses a lightweight heuristic to detect likely blank pages, optimized for low overhead and optional adoption.
 
 ```ts
 import { init, whiteScreenPlugin } from "@yachongshao/fe-observe-sdk";
 
-const sdk = init({
+init({
   endpoint: "/collect",
   plugins: [
     whiteScreenPlugin({
@@ -147,43 +174,15 @@ const sdk = init({
 });
 ```
 
-False-positive controls:
+### 5. 长任务卡顿插件 / Long-task Plugin
 
-- delayed execution after load instead of checking during the initial render path
-- idle scheduling to avoid adding pressure during page startup
-- dual-condition heuristic: blank point sampling alone is not enough; the page must also lack meaningful text/media
-- configurable root selectors and thresholds for apps with custom shells
-
-Tradeoffs:
-
-- this is heuristic detection, not screenshot-level certainty
-- sparse but valid UIs can still look blank if thresholds are too aggressive
-- apps with skeleton screens or canvas-only rendering may need custom tuning or should disable the plugin
-- it reports a normalized `custom` event named `white_screen_detected` rather than trying to infer a richer failure cause
-
-## Long-task plugin
-
-`longTaskPlugin()` detects main-thread jank using the browser `PerformanceObserver` `longtask` entry type.
-
-What it captures:
-
-- optional per-entry `custom` events named `long_task`
-- an aggregated `custom` event named `long_task_summary`
-
-Summary fields:
-
-- `long_task_count`
-- `total_duration`
-- `total_blocking_time`
-- `max_duration`
-- `avg_duration`
-
-Usage:
+中文：`longTaskPlugin()` 基于浏览器 `PerformanceObserver` 的 `longtask` 条目采集主线程卡顿信息，可选上报单条 long task，并汇总统计。  
+English: `longTaskPlugin()` uses browser `longtask` entries from `PerformanceObserver` to detect main-thread jank, with optional per-entry reporting and summary aggregation.
 
 ```ts
 import { init, longTaskPlugin } from "@yachongshao/fe-observe-sdk";
 
-const sdk = init({
+init({
   endpoint: "/collect",
   plugins: [
     longTaskPlugin({
@@ -193,31 +192,15 @@ const sdk = init({
 });
 ```
 
-Compatibility and limitations:
+### 6. 面包屑插件 / Breadcrumbs
 
-- this relies on `PerformanceObserver` support for the `longtask` entry type
-- in practice, support is strongest in Chromium-based browsers and not universal across all engines
-- if the browser does not support long-task entries, the plugin becomes a no-op
-- long-task data is a main-thread symptom signal; it tells you that blocking happened, not which application function caused it
-- attribution details are intentionally omitted in this MVP because they are limited and inconsistent across environments
-
-## Breadcrumbs
-
-Breadcrumbs provide a bounded recent-activity trail that gets attached to error events through `event.context.breadcrumbs`.
-
-Sources:
-
-- clicks through `breadcrumbsPlugin()`
-- route changes through `breadcrumbsPlugin()`
-- network events through `requestPlugin({ breadcrumb: true })`
-- errors through `errorsPlugin({ breadcrumb: true })` and `sdk.captureException()`
-
-Usage:
+中文：面包屑用于调试错误前的用户行为链路，支持点击、路由变化、网络事件和错误事件，并通过 `event.context.breadcrumbs` 自动附加到后续错误事件上。  
+English: Breadcrumbs capture a lightweight debugging trail for clicks, route changes, network events, and errors, and are automatically attached to later error events through `event.context.breadcrumbs`.
 
 ```ts
 import { breadcrumbsPlugin, errorsPlugin, init, requestPlugin } from "@yachongshao/fe-observe-sdk";
 
-const sdk = init({
+init({
   endpoint: "/collect",
   breadcrumbs: {
     limit: 20
@@ -230,18 +213,19 @@ const sdk = init({
 });
 ```
 
-Safety and privacy choices:
+## 兼容性与说明 / Compatibility Notes
 
-- the breadcrumb buffer is bounded and drops the oldest items first
-- click breadcrumbs record only a lightweight element label like tag, id, role, or `data-testid`
-- text inputs, textareas, and contenteditable nodes do not contribute captured text
-- route and network breadcrumbs strip query strings and keep only origin plus pathname
+中文：
+- SDK 面向现代浏览器，依赖 `fetch`、DOM 事件、`PerformanceObserver` 等能力
+- 某些插件能力依赖浏览器实现，例如 `longtask`、部分 Web Vitals 条目
+- 不支持的场景会自动降级为 no-op，而不是抛出错误
 
-Tradeoff:
+English:
+- The SDK targets modern browsers with `fetch`, DOM events, and `PerformanceObserver`
+- Some plugins depend on browser support, such as `longtask` and certain web vitals entries
+- Unsupported capabilities degrade to no-op behavior instead of throwing
 
-- breadcrumbs are intentionally low-detail, so they are best for sequence reconstruction rather than full replay
-
-## Repository layout
+## 仓库布局 / Repository Layout
 
 ```text
 .
