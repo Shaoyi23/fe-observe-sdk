@@ -32,7 +32,7 @@ npm run dev:demo
 ## 安装与基础用法
 
 ```bash
-npm install @yachongshao/fe-observe-sdk
+npm install @compass/fe-observe-sdk
 ```
 
 ```ts
@@ -42,7 +42,7 @@ import {
   init,
   performancePlugin,
   requestPlugin
-} from "@yachongshao/fe-observe-sdk";
+} from "@compass/fe-observe-sdk";
 
 const sdk = init({
   endpoint: "/collect",
@@ -87,7 +87,7 @@ sdk.captureException(new Error("Checkout failed"), {
 `performancePlugin()` 会通过共享的 `performance_metric` 事件上报 `fcp`、`lcp`、`cls`、`inp`、`ttfb`。
 
 ```ts
-import { init, performancePlugin } from "@yachongshao/fe-observe-sdk";
+import { init, performancePlugin } from "@compass/fe-observe-sdk";
 
 init({
   endpoint: "/collect",
@@ -100,7 +100,7 @@ init({
 `errorsPlugin()` 支持捕获 `window.onerror`、`unhandledrejection`、资源加载错误，以及通过 `sdk.captureException()` 进行手动上报。
 
 ```ts
-import { errorsPlugin, init } from "@yachongshao/fe-observe-sdk";
+import { errorsPlugin, init } from "@compass/fe-observe-sdk";
 
 init({
   endpoint: "/collect",
@@ -120,7 +120,7 @@ init({
 `requestPlugin()` 会在不破坏原始行为的前提下采集 `fetch` 和 `XMLHttpRequest` 的 method、url、status、duration、success。
 
 ```ts
-import { init, requestPlugin } from "@yachongshao/fe-observe-sdk";
+import { init, requestPlugin } from "@compass/fe-observe-sdk";
 
 init({
   endpoint: "/collect",
@@ -141,7 +141,7 @@ init({
 `whiteScreenPlugin()` 使用轻量级启发式策略检测疑似白屏，默认强调低开销和可选启用。
 
 ```ts
-import { init, whiteScreenPlugin } from "@yachongshao/fe-observe-sdk";
+import { init, whiteScreenPlugin } from "@compass/fe-observe-sdk";
 
 init({
   endpoint: "/collect",
@@ -160,7 +160,7 @@ init({
 `longTaskPlugin()` 基于浏览器 `PerformanceObserver` 的 `longtask` 条目采集主线程卡顿信息，可选上报单条 long task，并汇总统计。
 
 ```ts
-import { init, longTaskPlugin } from "@yachongshao/fe-observe-sdk";
+import { init, longTaskPlugin } from "@compass/fe-observe-sdk";
 
 init({
   endpoint: "/collect",
@@ -177,7 +177,7 @@ init({
 面包屑用于调试错误前的用户行为链路，支持点击、路由变化、网络事件和错误事件，并通过 `event.context.breadcrumbs` 自动附加到后续错误事件上。
 
 ```ts
-import { breadcrumbsPlugin, errorsPlugin, init, requestPlugin } from "@yachongshao/fe-observe-sdk";
+import { breadcrumbsPlugin, errorsPlugin, init, requestPlugin } from "@compass/fe-observe-sdk";
 
 init({
   endpoint: "/collect",

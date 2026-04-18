@@ -28,7 +28,7 @@ const sdk = init({
   endpoint: "/collect",
   app: {
     name: "demo-app",
-    release: "0.1.0",
+    release: "0.1.2",
     environment: "local"
   },
   user: {
