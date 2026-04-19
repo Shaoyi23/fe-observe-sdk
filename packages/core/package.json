@@ -1,8 +1,16 @@
 {
-  "name": "@fe-observe/core",
-  "version": "0.1.0",
+  "name": "compass-fe-observe-sdk",
+  "version": "0.1.2",
   "description": "Lightweight frontend observability SDK for web applications.",
+  "homepage": "https://github.com/Shaoyi23/fe-observe-sdk#readme",
+  "bugs": {
+    "url": "https://github.com/Shaoyi23/fe-observe-sdk/issues"
+  },
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shaoyi23/fe-observe-sdk.git"
+  },
   "sideEffects": false,
   "type": "module",
   "main": "./dist/cjs/index.js",
